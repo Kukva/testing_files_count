@@ -6,6 +6,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 #[AsCommand(
     name: 'count:files',
@@ -13,12 +14,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class CountFilesCommand extends Command
 {
-
+    private $commonDirectory;
+    public function __construct(ParameterBagInterface $parameterBag)
+    {
+        $this->commonDirectory = $parameterBag->get('common_directory');
+        parent::__construct();
+    }
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $rootdirectory = 'C:\ДЗ\5\TEST'; //Введите корневую папку
+        
         $total = 0;
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($rootdirectory));
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->commonDirectory));
 
         foreach ($iterator as $file)
         {
