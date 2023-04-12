@@ -13,7 +13,7 @@ class FileCount extends AbstractController
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
         
         foreach ($iterator as $file) {
-            if ($file->isFile() && $file->getBasename() === 'count') {
+            if ($file->isFile() && $file->getBasename() === 'count.txt') {
                 $openfile = fopen($file, 'r');
                 while (($line = fgets($openfile)) !== false) {
                     $number = intval($line);

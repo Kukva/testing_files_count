@@ -4,40 +4,34 @@ namespace App\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+
 
 #[AsCommand(
-    name: 'CountFilesCommand',
-    description: 'Add a short description for your command',
+    name: 'count:files',
+    description: 'This command allows to count numbers in file named "count"',
 )]
 class CountFilesCommand extends Command
 {
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $rootdirectory = 'C:\ДЗ\5\TEST'; //Введите корневую папку
+        $total = 0;
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($rootdirectory));
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        foreach ($iterator as $file)
+        {
+            if($file->isFile() && $file->getFilename() === 'count.txt'){
+                $openfile = fopen($file, 'r');
+                while (($line = fgets($openfile)) !== false) {
+                    $number = intval($line);
+                    if ($number)$total += $number;
+                }
+            }
         }
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $output->writeln('Total: '.$total);
 
         return Command::SUCCESS;
     }
