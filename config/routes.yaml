@@ -1,0 +1,7 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+count:
+    path: '/count'
+    controller: App\Controller\FileCount::countFiles
